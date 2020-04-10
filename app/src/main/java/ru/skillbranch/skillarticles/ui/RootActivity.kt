@@ -33,9 +33,9 @@ import ru.skillbranch.skillarticles.ui.delegates.ObserveProp
 import ru.skillbranch.skillarticles.ui.delegates.RenderProp
 import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
-import ru.skillbranch.skillarticles.viewmodels.Notify
-import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
+import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
+import ru.skillbranch.skillarticles.viewmodels.base.Notify
 
 
 class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
@@ -135,12 +135,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.handleSarch(query)
+                viewModel.handleSearch(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.handleSarch(newText)
+                viewModel.handleSearch(newText)
                 return true
             }
         })
@@ -163,7 +163,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             if (search_view.hasFocus()) search_view.clearFocus()
             viewModel.handleDownResult()
         }
-        btn_result_close.setOnClickListener {
+        btn_search_close.setOnClickListener {
             viewModel.handleSearchMode(false)
             invalidateOptionsMenu()
         }
@@ -274,7 +274,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         }
 
         override fun saveUi(outState: Bundle) {
-            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus()?.false)
+            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus()?:false)
         }
 
         override fun restoreUi(savedState: Bundle) {
