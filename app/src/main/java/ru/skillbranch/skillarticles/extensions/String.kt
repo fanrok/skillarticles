@@ -1,6 +1,8 @@
 package ru.skillbranch.skillarticles.extensions
 
-fun String.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int> {
+fun String?.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int> {
+    this ?: return mutableListOf()
+    if(substr.isEmpty())  return mutableListOf()
     val str = if (ignoreCase) {
         substr.toLowerCase()
     } else {

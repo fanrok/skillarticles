@@ -22,9 +22,10 @@ class RenderProp<T>(
         this.value = value
         onChange?.invoke(this.value)
         if (listeners.isNotEmpty()) listeners.forEach { it.invoke() }
-        fun addListener(listener: () -> Unit) {
-            listeners.add(listener)
-        }
+    }
+
+    fun addListener(listener: ()->Unit) {
+        listeners.add(listener)
     }
 }
 
