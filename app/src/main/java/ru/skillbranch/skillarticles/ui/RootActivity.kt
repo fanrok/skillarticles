@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.text.getSpans
@@ -149,7 +149,6 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
     }
 
 
-
     private fun setupBottombar() {
         btn_like.setOnClickListener { viewModel.handleLike() }
         btn_bookmark.setOnClickListener { viewModel.handleBookmark() }
@@ -224,14 +223,14 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             else AppCompatDelegate.MODE_NIGHT_NO
         }
 
-        var isSearch: Boolean by ObserveProp(false){
+        var isSearch: Boolean by ObserveProp(false) {
             if (it) showSearchBar() else hideSearchBar()
         }
 
         private var searchResults: List<Pair<Int, Int>> by ObserveProp(emptyList())
         private var searchPosition: Int by ObserveProp(0)
 
-        private var content: String by ObserveProp("loading"){
+        private var content: String by ObserveProp("loading") {
             tv_text_content.setText(it, TextView.BufferType.SPANNABLE)
             tv_text_content.movementMethod = ScrollingMovementMethod()
         }
@@ -242,12 +241,12 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 ::isSearch,
                 ::searchResults,
                 ::searchPosition
-            ){ilc, iss, sr, sp ->
-                if(!ilc && iss){
+            ) { ilc, iss, sr, sp ->
+                if (!ilc && iss) {
                     renderSearchResult(sr)
                     renderSearchPosition(sp)
                 }
-                if(!ilc && !iss){
+                if (!ilc && !iss) {
                     clearSearchResult()
                 }
                 bottombar.bindSearchInfo(sr.size, sp)
@@ -262,10 +261,10 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             isShowMenu = data.isShowMenu
             isDarkMode = data.isDarkMode
 
-            if(data.title != null) title = data.title
-            if(data.category != null) category = data.category
-            if(data.categoryIcon != null) categoryIcon = data.categoryIcon as Int
-            if(data.content.isNotEmpty()) content = data.content.first() as String
+            if (data.title != null) title = data.title
+            if (data.category != null) category = data.category
+            if (data.categoryIcon != null) categoryIcon = data.categoryIcon as Int
+            if (data.content.isNotEmpty()) content = data.content.first() as String
 
             isLoadingContent = data.isLoadingContent
             isSearch = data.isSearch
@@ -275,7 +274,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         }
 
         override fun saveUi(outState: Bundle) {
-            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus()?:false)
+            outState.putBoolean(::isFocusedSearch.name, search_view?.hasFocus() ?: false)
         }
 
         override fun restoreUi(savedState: Bundle) {
