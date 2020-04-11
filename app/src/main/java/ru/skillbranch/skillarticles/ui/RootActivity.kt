@@ -194,7 +194,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         var searchQuery: String? = null
 
         private var isLoadingContent by ObserveProp(true)
-        private var isLike: Boolean by RenderProp(false) { btn_bookmark.isChecked = it }
+        private var isLike: Boolean by RenderProp(false) { btn_like.isChecked = it }
         private var isBookmark: Boolean by RenderProp(false) { btn_bookmark.isChecked = it }
         private var isShowMenu: Boolean by RenderProp(false) {
             btn_settings.isChecked = it
@@ -218,7 +218,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             }
         }
 
-        private var isDarkMode: Boolean by RenderProp(false) {
+        private var isDarkMode: Boolean by RenderProp(false, false) {
             switch_mode.isChecked = it
             delegate.localNightMode = if (it) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
