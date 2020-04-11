@@ -1,13 +1,14 @@
 package ru.skillbranch.skillarticles.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
@@ -19,6 +20,7 @@ import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.Notify
 import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
+
 
 class RootActivity : AppCompatActivity() {
     private lateinit var viewModel: ArticleViewModel
@@ -33,10 +35,7 @@ class RootActivity : AppCompatActivity() {
 
         val vmFactory = ViewModelFactory("0")
         viewModel = ViewModelProviders.of(this, vmFactory).get(ArticleViewModel::class.java)
-        viewModel.observeState(this) {
-            renderUi(it)
-            setupToolbar()
-        }
+        viewModel.observeState(this) { articleState -> renderUi(articleState) }
 
         viewModel.observeNotifications(this) {
             renderNotification(it)
@@ -47,8 +46,14 @@ class RootActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_search, menu)
         val menuItem = menu?.findItem(R.id.action_search)
         val searchView = (menuItem?.actionView as? SearchView)
-        searchView?.queryHint = "Search"
-
+        searchView?.queryHint = "Search..."
+        searchView?.inputType = InputType.TYPE_CLASS_TEXT
+        val content = viewModel.currentState
+        if (content.isSearch) {
+            menuItem?.expandActionView()
+            searchView?.setQuery(content.searchQuery, false)
+            searchView?.requestFocus()
+        }
 
         menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
@@ -115,26 +120,27 @@ class RootActivity : AppCompatActivity() {
 
         toolbar.title = data.title ?: "Skill Articles"
         toolbar.subtitle = data.category ?: "loading..."
-        if(data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
+        if (data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
     }
 
-    private fun renderNotification(notify: Notify){
+    private fun renderNotification(notify: Notify) {
         val snackbar = Snackbar.make(coordinator_container, notify.message, Snackbar.LENGTH_LONG)
 
-        when(notify){
-            is Notify.TextMessage -> {/**/}
+        when (notify) {
+            is Notify.TextMessage -> {/**/
+            }
             is Notify.ActionMessage -> {
                 snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
-                snackbar.setAction(notify.actionLabel){
+                snackbar.setAction(notify.actionLabel) {
                     notify.actionHandler?.invoke()
                 }
             }
             is Notify.ErrorMessage -> {
-                with(snackbar){
+                with(snackbar) {
                     setBackgroundTint(getColor(R.color.design_default_color_error))
                     setTextColor(getColor(android.R.color.white))
                     setActionTextColor(getColor(android.R.color.white))
-                    setAction(notify.errLabel){
+                    setAction(notify.errLabel) {
                         notify.errHandler?.invoke()
                     }
                 }
@@ -143,16 +149,16 @@ class RootActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    private fun setupBottombar(){
-        btn_like.setOnClickListener{viewModel.handleLike()}
-        btn_bookmark.setOnClickListener{viewModel.handleBookmark()}
-        btn_share.setOnClickListener{viewModel.handleShare()}
-        btn_settings.setOnClickListener{viewModel.handleToggleMenu()}
+    private fun setupBottombar() {
+        btn_like.setOnClickListener { viewModel.handleLike() }
+        btn_bookmark.setOnClickListener { viewModel.handleBookmark() }
+        btn_share.setOnClickListener { viewModel.handleShare() }
+        btn_settings.setOnClickListener { viewModel.handleToggleMenu() }
     }
 
-    private fun setupSubmenu(){
-        btn_text_up.setOnClickListener{viewModel.handleUpText()}
-        btn_text_down.setOnClickListener{viewModel.handleDownText()}
-        switch_mode.setOnClickListener{viewModel.handleNightMode()}
+    private fun setupSubmenu() {
+        btn_text_up.setOnClickListener { viewModel.handleUpText() }
+        btn_text_down.setOnClickListener { viewModel.handleDownText() }
+        switch_mode.setOnClickListener { viewModel.handleNightMode() }
     }
 }
