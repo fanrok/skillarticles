@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.TypedValue
+import androidx.annotation.AttrRes
 
 fun Context.dpToPx(dp: Int): Float {
     return TypedValue.applyDimension(
@@ -21,6 +22,15 @@ fun Context.dpToIntPx(dp: Int): Int {
         dp.toFloat(),
         this.resources.displayMetrics
     ).toInt()
+}
+
+fun Context.attrValue(@AttrRes id: Int): Int{
+    val item = TypedValue()
+    if(theme.resolveAttribute(id, item, true)){
+        return item.data
+    }else{
+        error("not found: $id")
+    }
 }
 
 val Context.isNetworkAvailable: Boolean
