@@ -151,7 +151,7 @@ class ArticleViewModel(private val articleId: String) :
     override fun handleSearch(query: String?) {
         query ?: return
         if(clearContent == null)  clearContent = MarkdownParser.clear(currentState.content)
-        val result = (currentState.content?.firstOrNull() as? String)
+        val result = clearContent
             .indexesOf(query)
             .map { it to it + query.length }
         updateState { it.copy(searchQuery = query, searchResults = result, searchPosition = 0) }
