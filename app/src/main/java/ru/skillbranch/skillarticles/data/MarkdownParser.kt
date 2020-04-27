@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.markdown
+package ru.skillbranch.skillarticles.data
 
 import java.util.regex.Pattern
 
@@ -381,9 +381,9 @@ sealed class Element() {
     ) : Element()
 
     data class BlockCode(
-        val type: Type = Type.MIDDLE,
-        override val text: CharSequence,
-        override val elements: List<Element> = emptyList()
+            val type: Type = Type.MIDDLE,
+            override val text: CharSequence,
+            override val elements: List<Element> = emptyList()
     ) : Element() {
         enum class Type { START, END, MIDDLE, SINGLE }
     }
