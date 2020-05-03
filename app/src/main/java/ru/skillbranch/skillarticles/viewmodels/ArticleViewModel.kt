@@ -8,11 +8,13 @@ import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository.getAppSettings
+import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.indexesOf
-import ru.skillbranch.skillarticles.data.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.clearContent
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
@@ -40,7 +42,7 @@ class ArticleViewModel(private val articleId: String) :
             content ?: return@subscribeOnDataSource null
             state.copy(
                 isLoadingContent = false,
-                content = content
+                content =   content
             )
         }
         subscribeOnDataSource(getArticlePersonalInfo()) { info, state ->
@@ -58,8 +60,11 @@ class ArticleViewModel(private val articleId: String) :
         }
     }
 
-    override fun getArticleContent(): LiveData<String?> {
+    override fun getArticleContent(): LiveData<List<MarkdownElement>?> {
         return repository.loadArticleContent(articleId)
+    }
+    fun handleCopyCode() {
+        notify(Notify.TextMessage("Code copy to clipboard"))
     }
 
     override fun getArticleData(): LiveData<ArticleData?> {
@@ -150,10 +155,9 @@ class ArticleViewModel(private val articleId: String) :
 
     override fun handleSearch(query: String?) {
         query ?: return
-        if(clearContent == null)  clearContent = MarkdownParser.clear(currentState.content)
-        val result = clearContent
-            .indexesOf(query)
-            .map { it to it + query.length }
+        if (clearContent == null && currentState.content.isNotEmpty()) clearContent = currentState.content.clearContent()
+        val result = clearContent.indexesOf(query)
+                .map { it to it + query.length }
         updateState { it.copy(searchQuery = query, searchResults = result, searchPosition = 0) }
     }
 
@@ -179,7 +183,7 @@ data class ArticleState(
     val date: String? = null,
     val author: Any? = null,
     val poster: String? = null,
-    val content: String? = null,
+    val content: List<MarkdownElement> = emptyList(),
     val reviews: List<Any> = emptyList()
 ) : IViewModelState {
     override fun save(outState: Bundle) {

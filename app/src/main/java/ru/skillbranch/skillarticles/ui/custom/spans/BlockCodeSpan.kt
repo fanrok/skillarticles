@@ -8,9 +8,9 @@ import android.text.style.ReplacementSpan
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
-import ru.skillbranch.skillarticles.data.Element
+import ru.skillbranch.skillarticles.data.repositories.Element
 
-
+/*
 class BlockCodeSpan(
     @ColorInt
     private val textColor: Int,
@@ -52,3 +52,4 @@ class BlockCodeSpan(
         return 0
     }
 }
+*/
