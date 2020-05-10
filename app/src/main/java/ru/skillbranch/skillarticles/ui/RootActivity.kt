@@ -37,10 +37,7 @@ import ru.skillbranch.skillarticles.viewmodels.base.Notify
 class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
     override val layout: Int = R.layout.activity_root
-    override val viewModel: ArticleViewModel by lazy {
-        val vmFactory = ViewModelFactory("0")
-        ViewModelProviders.of(this, vmFactory).get(ArticleViewModel::class.java)
-    }
+    override val viewModel: ArticleViewModel by provideViewModel("0")
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override val binding: ArticleBinding by lazy { ArticleBinding() }
@@ -184,14 +181,16 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             logo.layoutParams = it
         }
     }
-//    private fun setupCopyListener(){
-//        tv_text_content.setCopyListener { copy ->
-//            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//            val clip = ClipData.newPlainText("Copied code", copy)
-//            clipboard.setPrimaryClip(clip)
-//            viewModel.handleCopyCode()
-//        }
-//    }
+
+    private fun setupCopyListener() {
+        tv_text_content.setCopyListener { copy ->
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Copied code", copy)
+            clipboard.setPrimaryClip(clip)
+            viewModel.handleCopyCode()
+        }
+    }
+
 
     inner class ArticleBinding : Binding() {
         var isFocusedSearch: Boolean = false

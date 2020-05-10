@@ -3,6 +3,8 @@ package ru.skillbranch.skillarticles.ui.custom.markdown
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Spannable
 import android.view.*
 import android.widget.ImageView
@@ -17,14 +19,14 @@ import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.dpToPx
+import ru.skillbranch.skillarticles.extensions.setPaddingOptionally
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import kotlin.math.hypot
-import ru.skillbranch.skillarticles.R
-import ru.skillbranch.skillarticles.extensions.setPaddingOptionally
 
 
 @SuppressLint("ViewConstructor")
@@ -43,38 +45,31 @@ class MarkdownImageView private constructor(
     override val spannableContent: Spannable
         get() = tv_title.text as Spannable
 
-
     //views
     private lateinit var imageUrl: String
     private lateinit var imageTitle: CharSequence
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val iv_image: ImageView
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val tv_title: MarkdownTextView
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var tv_alt: TextView? = null
 
-    @Px
-    private val titleTopMargin: Int = context.dpToIntPx(8)
 
     @Px
-    private val titlePadding: Int = context.dpToIntPx(56)
-
+    private val titleTopMargin: Int = context.dpToIntPx(8) //8dp
     @Px
-    private val cornerRadius: Float = context.dpToPx(4)
-
+    private val titlePadding: Int = context.dpToIntPx(56) //56dp
+    @Px
+    private val cornerRadius: Float = context.dpToPx(4) //4dp
     @ColorInt
-    private val colorSurface: Int = context.attrValue(R.attr.colorSurface)
-
+    private val colorSurface: Int = context.attrValue(R.attr.colorSurface) //colorSurface
     @ColorInt
-    private val colorOnSurface: Int = context.attrValue(R.attr.colorOnSurface)//colorOnSurface
-
+    private val colorOnSurface: Int = context.attrValue(R.attr.colorOnSurface) //colorOnSurface
     @ColorInt
-    private val colorOnBackground: Int = context.attrValue(R.attr.colorOnBackground)//colorOnBackground
-
+    private val colorOnBackground: Int =
+            context.attrValue(R.attr.colorOnBackground) //colorOnBackground
     @ColorInt
     private var lineColor: Int = context.getColor(R.color.color_divider) //R.color.color_divider
 
@@ -86,6 +81,7 @@ class MarkdownImageView private constructor(
     }
 
     init {
+//        setBackgroundColor(Color.RED)
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         iv_image = ImageView(context).apply {
             outlineProvider = object : ViewOutlineProvider() {
@@ -126,6 +122,7 @@ class MarkdownImageView private constructor(
                 .transform(AspectRatioResizeTransform())
                 .into(iv_image)
 
+
         if (alt != null) {
             tv_alt = TextView(context).apply {
                 text = alt
@@ -136,28 +133,34 @@ class MarkdownImageView private constructor(
                 setPadding(titleTopMargin)
                 isVisible = false
             }
-            addView(tv_alt)
-            iv_image.setOnClickListener {
-                if (tv_alt?.isVisible == true) animateHideAlt()
-                else animateShowAlt()
-            }
+        }
+        addView(tv_alt)
+
+        iv_image.setOnClickListener {
+            if (tv_alt?.isVisible == true) animateHideAlt()
+            else animateShowAlt()
         }
     }
-
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var usedHeight = 0
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+
+        //create measureSpec for children EXACTLY
+        //all children width == parent width (constraint parent width)
         val ms = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+
         iv_image.measure(ms, heightMeasureSpec)
         tv_title.measure(ms, heightMeasureSpec)
-        tv_alt?.measure(ms, heightMeasureSpec)
+        tv_alt?.measure(widthMeasureSpec, heightMeasureSpec)
+
         usedHeight += iv_image.measuredHeight
         usedHeight += titleTopMargin
         linePositionY = usedHeight + tv_title.measuredHeight / 2f
         usedHeight += tv_title.measuredHeight
-        setMeasuredDimension(width, heightMeasureSpec)
+
+        setMeasuredDimension(width, usedHeight)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
@@ -166,19 +169,23 @@ class MarkdownImageView private constructor(
         val bodyWidth = r - l - paddingLeft - paddingRight
         val left = paddingLeft
         val right = paddingLeft + bodyWidth
+
         iv_image.layout(
                 left,
                 usedHeight,
                 right,
                 usedHeight + iv_image.measuredHeight
         )
+
         usedHeight += iv_image.measuredHeight + titleTopMargin
+
         tv_title.layout(
                 left,
                 usedHeight,
                 right,
                 usedHeight + tv_title.measuredHeight
         )
+
         tv_alt?.layout(
                 left,
                 iv_image.measuredHeight - (tv_alt?.measuredHeight ?: 0),
@@ -190,13 +197,7 @@ class MarkdownImageView private constructor(
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        canvas.drawLine(
-                0f,
-                linePositionY,
-                titlePadding.toFloat(),
-                linePositionY,
-                linePaint
-        )
+        canvas.drawLine(0f, linePositionY, titlePadding.toFloat(), linePositionY, linePaint)
         canvas.drawLine(
                 canvas.width - titlePadding.toFloat(),
                 linePositionY,
@@ -204,6 +205,7 @@ class MarkdownImageView private constructor(
                 linePositionY,
                 linePaint
         )
+
     }
 
     private fun animateShowAlt() {
@@ -230,6 +232,42 @@ class MarkdownImageView private constructor(
         )
         va.doOnEnd { tv_alt?.isVisible = false }
         va.start()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState = SavedState(super.onSaveInstanceState())
+        savedState.isVisibleAltMode = tv_alt?.isVisible ?: false
+        return savedState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedState) {
+            tv_alt?.isVisible = state.isVisibleAltMode
+        }
+    }
+
+    private class SavedState : BaseSavedState, Parcelable {
+        var isVisibleAltMode: Boolean = false
+
+        constructor(superState: Parcelable?) : super(superState)
+
+        constructor(src: Parcel) : super(src) {
+            isVisibleAltMode = src.readInt() == 1
+        }
+
+        override fun writeToParcel(dst: Parcel, flags: Int) {
+            super.writeToParcel(dst, flags)
+            dst.writeInt(if (isVisibleAltMode) 1 else 0)
+        }
+
+        override fun describeContents() = 0
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
+
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+        }
     }
 }
 
