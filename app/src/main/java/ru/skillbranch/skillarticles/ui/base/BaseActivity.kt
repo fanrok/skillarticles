@@ -14,6 +14,7 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.circleCropTransform
@@ -68,22 +69,23 @@ abstract class BaseActivity<T : BaseViewModel<out IViewModelState>> : AppCompatA
         when (command) {
             is NavigationCommand.To -> {
                 navController.navigate(
-                    command.destination,
-                    command.args,
-                    command.options,
-                    command.extras
+                        command.destination,
+                        command.args,
+                        command.options,
+                        command.extras
                 )
             }
 
             is NavigationCommand.FinishLogin -> {
                 navController.navigate(R.id.finish_login)
-                if(command.privateDestination!=null) navController.navigate(command.privateDestination)
+                if (command.privateDestination != null)
+                    navController.navigate(command.privateDestination)
             }
 
             is NavigationCommand.StartLogin -> {
                 navController.navigate(
-                    R.id.start_login,
-                    bundleOf("private_destination" to (command.privateDestination ?: -1))
+                        R.id.start_login,
+                        bundleOf("private_destination" to (command.privateDestination ?: -1))
                 )
             }
         }
@@ -162,10 +164,10 @@ class ToolbarBuilder() {
                     }
 
                     Glide.with(context)
-                        .load(this@ToolbarBuilder.logo)
-                        .apply(circleCropTransform())
-                        .override(logoSize)
-                        .into(logo)
+                            .load(this@ToolbarBuilder.logo)
+                            .apply(circleCropTransform())
+                            .override(logoSize)
+                            .into(logo)
                 }
             } else {
                 logo = null
@@ -175,11 +177,11 @@ class ToolbarBuilder() {
 }
 
 data class MenuItemHolder(
-    val title: String,
-    val menuId: Int,
-    val icon: Int,
-    val actionViewLayout: Int? = null,
-    val clickListener: ((MenuItem) -> Unit)? = null
+        val title: String,
+        val menuId: Int,
+        val icon: Int,
+        val actionViewLayout: Int? = null,
+        val clickListener: ((MenuItem) -> Unit)? = null
 )
 
 class BottombarBuilder() {
@@ -233,7 +235,7 @@ class BottombarBuilder() {
             isVisible = visible
             //show bottombar if hidden due to scroll behavior
             ((layoutParams as CoordinatorLayout.LayoutParams).behavior as HideBottomViewOnScrollBehavior)
-                .slideUp(this)
+                    .slideUp(this)
         }
     }
 

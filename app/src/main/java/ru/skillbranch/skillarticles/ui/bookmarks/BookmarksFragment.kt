@@ -18,8 +18,8 @@ class BookmarksFragment : Fragment() {
     private lateinit var viewModel: BookmarksViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_bookmarks, container, false)
     }

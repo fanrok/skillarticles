@@ -15,9 +15,9 @@ import ru.skillbranch.skillarticles.ui.custom.behaviors.BottombarBehavior
 import kotlin.math.hypot
 
 class Bottombar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), CoordinatorLayout.AttachedBehavior {
     var isSearchMode = false
 
@@ -59,11 +59,11 @@ class Bottombar @JvmOverloads constructor(
         group_bottom.isVisible = true
         val endRadius = hypot(width.toFloat(), height / 2f)
         val va = ViewAnimationUtils.createCircularReveal(
-            reveal,
-            width,
-            height / 2,
-            endRadius,
-            0f
+                reveal,
+                width,
+                height / 2,
+                endRadius,
+                0f
         )
         va.doOnEnd { reveal.isVisible = false }
         va.start()
@@ -73,11 +73,11 @@ class Bottombar @JvmOverloads constructor(
         reveal.isVisible = true
         val endRadius = hypot(width.toFloat(), height / 2f)
         val va = ViewAnimationUtils.createCircularReveal(
-            reveal,
-            width,
-            height / 2,
-            0f,
-            endRadius
+                reveal,
+                width,
+                height / 2,
+                0f,
+                endRadius
         )
         va.doOnEnd { group_bottom.isVisible = false }
         va.start()
