@@ -1,4 +1,3 @@
-
 package ru.skillbranch.skillarticles.data.models
 
 import java.util.*
