@@ -18,7 +18,7 @@ import ru.skillbranch.skillarticles.extensions.shortFormat
 import kotlin.math.max
 
 class ArticleItemView constructor(
-    context: Context
+        context: Context
 ) : ViewGroup(context, null, 0) {
     private val iv_poster: ImageView
     private val iv_category: ImageView
@@ -77,7 +77,7 @@ class ArticleItemView constructor(
         addView(iv_poster)
 
         iv_category = ImageView(context).apply {
-            id = R.id.tv_author
+            id = R.id.iv_category
             layoutParams = LayoutParams(categorySize, categorySize)
         }
         addView(iv_category)
@@ -90,7 +90,7 @@ class ArticleItemView constructor(
         addView(tv_description)
 
         iv_likes = ImageView(context).apply {
-            id = R.id.tv_author
+            id = R.id.iv_likes
             layoutParams = LayoutParams(iconSize, iconSize)
             imageTintList = ColorStateList.valueOf(grayColor)
             setImageResource(R.drawable.ic_favorite_black_24dp)
@@ -171,17 +171,17 @@ class ArticleItemView constructor(
         var left = paddingLeft
 
         tv_date.layout(
-            left,
-            usedHeight,
-            left + tv_date.measuredWidth,
-            usedHeight + tv_date.measuredHeight
+                left,
+                usedHeight,
+                left + tv_date.measuredWidth,
+                usedHeight + tv_date.measuredHeight
         )
         left = tv_date.right + defaultPadding
         tv_author.layout(
-            left,
-            usedHeight,
-            left + tv_author.measuredWidth,
-            usedHeight + tv_author.measuredHeight
+                left,
+                usedHeight,
+                left + tv_author.measuredWidth,
+                usedHeight + tv_author.measuredHeight
         )
         usedHeight += tv_author.measuredHeight + defaultSpace
         left = paddingLeft
@@ -191,78 +191,78 @@ class ArticleItemView constructor(
         val rightTop = if (rh < tv_title.measuredHeight) (tv_title.measuredHeight - rh) / 2 else 0
 
         tv_title.layout(
-            left,
-            usedHeight + leftTop,
-            left + tv_title.measuredWidth,
-            usedHeight + leftTop + tv_title.measuredHeight
+                left,
+                usedHeight + leftTop,
+                left + tv_title.measuredWidth,
+                usedHeight + leftTop + tv_title.measuredHeight
         )
         iv_poster.layout(
-            left + bodyWidth - posterSize,
-            usedHeight + rightTop,
-            left + bodyWidth,
-            usedHeight + rightTop + posterSize
+                left + bodyWidth - posterSize,
+                usedHeight + rightTop,
+                left + bodyWidth,
+                usedHeight + rightTop + posterSize
         )
         iv_category.layout(
-            iv_poster.left - categorySize / 2,
-            iv_poster.bottom - categorySize / 2,
-            iv_poster.left + categorySize / 2,
-            iv_poster.bottom + categorySize / 2
+                iv_poster.left - categorySize / 2,
+                iv_poster.bottom - categorySize / 2,
+                iv_poster.left + categorySize / 2,
+                iv_poster.bottom + categorySize / 2
         )
         usedHeight += if (rh > tv_title.measuredHeight) rh else tv_title.measuredHeight
         usedHeight += defaultSpace
 
         tv_description.layout(
-            left,
-            usedHeight,
-            left + bodyWidth,
-            usedHeight + tv_description.measuredHeight
+                left,
+                usedHeight,
+                left + bodyWidth,
+                usedHeight + tv_description.measuredHeight
         )
         usedHeight += tv_description.measuredHeight + defaultSpace
 
         val fontDiff = iconSize - tv_likes_count.measuredHeight
         iv_likes.layout(
-            left,
-            usedHeight - fontDiff,
-            left + iconSize,
-            usedHeight + iconSize - fontDiff
+                left,
+                usedHeight - fontDiff,
+                left + iconSize,
+                usedHeight + iconSize - fontDiff
         )
 
         left = iv_likes.right + defaultSpace
         tv_likes_count.layout(
-            left,
-            usedHeight,
-            left + tv_likes_count.measuredWidth,
-            usedHeight + tv_likes_count.measuredHeight
+                left,
+                usedHeight,
+                left + tv_likes_count.measuredWidth,
+                usedHeight + tv_likes_count.measuredHeight
         )
         left = tv_likes_count.right + defaultPadding
 
         iv_comments.layout(
-            left,
-            usedHeight - fontDiff,
-            left + iconSize,
-            usedHeight + iconSize - fontDiff
+                left,
+                usedHeight - fontDiff,
+                left + iconSize,
+                usedHeight + iconSize - fontDiff
         )
         left = iv_comments.right + defaultSpace
         tv_comments_count.layout(
-            left,
-            usedHeight,
-            left + tv_comments_count.measuredWidth,
-            usedHeight + tv_comments_count.measuredHeight
+                left,
+                usedHeight,
+                left + tv_comments_count.measuredWidth,
+                usedHeight + tv_comments_count.measuredHeight
         )
         left = tv_comments_count.right + defaultPadding
         tv_read_duration.layout(
-            left,
-            usedHeight,
-            left + tv_read_duration.measuredWidth,
-            usedHeight + tv_read_duration.measuredHeight
+                left,
+                usedHeight,
+                left + tv_read_duration.measuredWidth,
+                usedHeight + tv_read_duration.measuredHeight
         )
 
         left = defaultPadding
         iv_bookmark.layout(
-            left + bodyWidth - iconSize,
-            usedHeight - fontDiff,
-            left + bodyWidth,
-            usedHeight + iconSize - fontDiff
+                left + bodyWidth - iconSize,
+                usedHeight - fontDiff,
+                left + bodyWidth,
+                usedHeight + iconSize - fontDiff
         )
     }
 
@@ -273,16 +273,16 @@ class ArticleItemView constructor(
         tv_title.text = item.title
 
         Glide.with(context)
-            .load(item.poster)
-            .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .override(posterSize)
-            .into(iv_poster)
+                .load(item.poster)
+                .transform(CenterCrop(), RoundedCorners(cornerRadius))
+                .override(posterSize)
+                .into(iv_poster)
 
         Glide.with(context)
-            .load(item.categoryIcon)
-            .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .override(categorySize)
-            .into(iv_category)
+                .load(item.categoryIcon)
+                .transform(CenterCrop(), RoundedCorners(cornerRadius))
+                .override(categorySize)
+                .into(iv_category)
 
         tv_description.text = item.description
         tv_likes_count.text = "${item.likeCount}"

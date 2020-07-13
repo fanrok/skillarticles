@@ -22,7 +22,11 @@ object LocalDataHolder {
         if (localArticles[articleId] == null) {
             Log.e("DataHolder", "findArticle $articleId: ");
             val article = localArticleItems.find { it.id == articleId }
-            localArticles[articleId] = MutableLiveData(EntityGenerator.generateArticle(article ?: EntityGenerator.createArticleItem(articleId)))
+            localArticles[articleId] = MutableLiveData(
+                    EntityGenerator.generateArticle(
+                            article ?: EntityGenerator.createArticleItem(articleId)
+                    )
+            )
         }
         return localArticles[articleId]!!
     }
@@ -52,7 +56,7 @@ object LocalDataHolder {
 
     fun incrementCommentsCount(articleId: String) {
         val old =
-            localArticles[articleId]?.value ?: error("Local article with id: $articleId not found")
+                localArticles[articleId]?.value ?: error("Local article with id: $articleId not found")
         localArticles[articleId]!!.postValue(old.copy(commentCount = old.commentCount.inc()))
     }
 }
@@ -79,27 +83,23 @@ object NetworkDataHolder {
 
     fun sendMessage(articleId: String, text: String, answerToSlug: String?, user: User) {
         val mutableList =
-            commentsData[articleId] ?: error("Comments for article id : $articleId not found")
+                commentsData[articleId] ?: error("Comments for article id : $articleId not found")
         val index =
-            if (answerToSlug == null) 0 else mutableList.indexOfFirst { it.slug == answerToSlug }.inc()
+                if (answerToSlug == null) 0 else mutableList.indexOfFirst { it.slug == answerToSlug }
+                        .inc()
         val mess = mutableList.getOrNull(index.dec())
         val id = "${mutableList.size}"
         mutableList.add(
-            index,
-            CommentItemData(
-                id,
-                articleId,
-                user,
-                body = text,
-                slug = "${answerToSlug ?: ""}$id/",
-                answerTo = mess?.user?.name,
-                date = Date()
-            )
+                index,
+                CommentItemData(
+                        id,
+                        articleId,
+                        user,
+                        body = text,
+                        slug = "${answerToSlug ?: ""}$id/",
+                        answerTo = mess?.user?.name,
+                        date = Date()
+                )
         )
     }
 }
-
-
-
-
-

@@ -59,7 +59,7 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         addView(tv_author)
 
         tv_body = TextView(context).apply {
-            id=R.id.tv_comment_body
+            id = R.id.tv_comment_body
             setTextColor(grayColor)
             textSize = 14f
         }
@@ -91,7 +91,7 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         measureChild(tv_date, widthMeasureSpec, heightMeasureSpec)
 
         tv_author.width =
-            width - paddingLeft - paddingRight - avatarSize - defaultHSpace - tv_date.measuredWidth
+                width - paddingLeft - paddingRight - avatarSize - defaultHSpace - tv_date.measuredWidth
         measureChild(tv_author, widthMeasureSpec, heightMeasureSpec)
 
         usedHeight += avatarSize + defaultVSpace
@@ -109,18 +109,18 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         if (tv_answer_to.isVisible) {
             val lb = left + avatarSize + defaultHSpace / 2
             tv_answer_to.layout(
-                lb,
-                usedHeight,
-                lb + tv_answer_to.measuredWidth,
-                usedHeight + tv_answer_to.measuredHeight
+                    lb,
+                    usedHeight,
+                    lb + tv_answer_to.measuredWidth,
+                    usedHeight + tv_answer_to.measuredHeight
             )
 
             val diff = (tv_answer_to.measuredHeight - iconSize) / 2
             iv_answer_icon.layout(
-                tv_answer_to.right + defaultHSpace / 2,
-                usedHeight + diff,
-                tv_answer_to.right + defaultHSpace / 2 + iconSize,
-                usedHeight + iconSize + diff
+                    tv_answer_to.right + defaultHSpace / 2,
+                    usedHeight + diff,
+                    tv_answer_to.right + defaultHSpace / 2 + iconSize,
+                    usedHeight + iconSize + diff
             )
 
             usedHeight += tv_answer_to.measuredHeight
@@ -130,33 +130,33 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         val diffD = (avatarSize - tv_date.measuredHeight) / 2
 
         iv_avatar.layout(
-            left,
-            usedHeight,
-            left + avatarSize,
-            usedHeight + avatarSize
+                left,
+                usedHeight,
+                left + avatarSize,
+                usedHeight + avatarSize
         )
 
         tv_author.layout(
-            iv_avatar.right + defaultHSpace / 2,
-            usedHeight + diffH,
-            iv_avatar.right + defaultHSpace / 2 + tv_author.measuredWidth,
-            usedHeight + tv_author.measuredHeight + diffH
+                iv_avatar.right + defaultHSpace / 2,
+                usedHeight + diffH,
+                iv_avatar.right + defaultHSpace / 2 + tv_author.measuredWidth,
+                usedHeight + tv_author.measuredHeight + diffH
         )
 
         tv_date.layout(
-            tv_author.right + defaultHSpace / 2,
-            usedHeight + diffD,
-            tv_author.right + defaultHSpace / 2 + tv_date.measuredWidth,
-            usedHeight + tv_date.measuredHeight + diffD
+                tv_author.right + defaultHSpace / 2,
+                usedHeight + diffD,
+                tv_author.right + defaultHSpace / 2 + tv_date.measuredWidth,
+                usedHeight + tv_date.measuredHeight + diffD
         )
 
         usedHeight += avatarSize + defaultVSpace
 
         tv_body.layout(
-            left,
-            usedHeight,
-            left + tv_body.measuredWidth,
-            usedHeight + tv_body.measuredHeight
+                left,
+                usedHeight,
+                left + tv_body.measuredWidth,
+                usedHeight + tv_body.measuredHeight
         )
     }
 
@@ -166,11 +166,11 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         if (level == 1) return
         for (i in 1 until level) {
             canvas.drawLine(
-                i.toFloat() * defaultHSpace,
-                0f,
-                i.toFloat() * defaultHSpace,
-                canvas.height.toFloat(),
-                linePaint
+                    i.toFloat() * defaultHSpace,
+                    0f,
+                    i.toFloat() * defaultHSpace,
+                    canvas.height.toFloat(),
+                    linePaint
             )
         }
     }
@@ -178,15 +178,16 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
     fun bind(item: CommentItemData?) {
         if (item == null) {
             //TODO show shimmer
+            tv_author.text = "Loading - need placeholder this"
         } else {
             val level = min(item.slug.split("/").size.dec(), 5)
             setPaddingOptionally(left = level * defaultHSpace)
 
             Glide.with(context)
-                .load(item.user.avatar)
-                .apply(RequestOptions.circleCropTransform())
-                .override(avatarSize)
-                .into(iv_avatar)
+                    .load(item.user.avatar)
+                    .apply(RequestOptions.circleCropTransform())
+                    .override(avatarSize)
+                    .into(iv_avatar)
 
             tv_author.text = item.user.name
             tv_date.text = item.date.humanizeDiff()
