@@ -33,7 +33,7 @@ class ArticlesViewModel(handle: SavedStateHandle) : BaseViewModel<ArticlesState>
     fun observeList(owner: LifecycleOwner, onChange: (list: PagedList<ArticleItemData>) -> Unit) {
         listData.observe(owner, Observer { onChange(it) })
     }
-
+    //1
     fun handleSearch(query: String?) {
         query ?: return
         updateState {
