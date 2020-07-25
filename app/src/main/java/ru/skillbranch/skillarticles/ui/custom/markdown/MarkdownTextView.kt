@@ -17,9 +17,9 @@ import ru.skillbranch.skillarticles.extensions.dpToIntPx
 @SuppressLint("ViewConstructor")
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 class MarkdownTextView constructor(
-        context: Context,
-        fontSize: Float,
-        mockHelper: SearchBgHelper? = null //for mock
+    context: Context,
+    fontSize: Float,
+    mockHelper: SearchBgHelper? = null //for mock
 ) : TextView(context, null, 0), IMarkdownView {
 
     constructor(context: Context, fontSize: Float) : this(context, fontSize, null)
@@ -33,7 +33,7 @@ class MarkdownTextView constructor(
     override val spannableContent: Spannable
         get() = text as Spannable
 
-    val color = context.attrValue(R.attr.colorOnBackground) //colorOnBackground
+    val color = context.attrValue(R.attr.colorOnBackground)
     private val focusRect = Rect()
 
     @SuppressLint("VisibleForTests")
@@ -45,13 +45,13 @@ class MarkdownTextView constructor(
             //show rect on view with animation
             requestRectangleOnScreen(focusRect, false)
         }
-//        setBackgroundColor(Color.GREEN)
         setTextColor(color)
         textSize = fontSize
         movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onDraw(canvas: Canvas) {
+        val l = layout
         if (text is Spanned && layout != null) {
             canvas.withTranslation(totalPaddingLeft.toFloat(), totalPaddingTop.toFloat()) {
                 searchBgHelper.draw(canvas, text as Spanned, layout)

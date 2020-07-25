@@ -14,7 +14,7 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Вчера в 20:30" />
+        android:text="Вчера в 20:30" />
 
     <TextView
         android:id="@+id/tv_author"
@@ -26,16 +26,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_date"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="John Doe" />
+        android:text="John Doe" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tv_date,tv_author"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="715dp" />
+        app:constraint_referenced_ids="tv_date,tv_author" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -47,7 +45,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="24dp"
         android:textColor="?attr/colorPrimary"
-        tools:text="Инженеры создали 3D-дисплей из «Звёздных войн» 3D-дисплей из «Звёздных войн» 3D-дисплей из «Звёздных войн»"
+        android:text="Инженеры создали 3D-дисплей "
         app:layout_constraintTop_toBottomOf="@id/barrier_top"
         app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,22 +55,23 @@
         android:id="@+id/iv_poster"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        tools:srcCompat="@tools:sample/avatars"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintTop_toBottomOf="@id/barrier_top"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="28dp"
+        android:src="@drawable/ic_launcher_background"
         app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_top" />
 
     <ImageView
         android:id="@+id/iv_category"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        tools:srcCompat="@tools:sample/avatars"
-        app:layout_constraintTop_toBottomOf="@id/iv_poster"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="@id/iv_poster"
+        app:layout_constraintEnd_toStartOf="@id/iv_poster"
         app:layout_constraintStart_toStartOf="@id/iv_poster"
-        app:layout_constraintEnd_toStartOf="@id/iv_poster"/>
+        app:layout_constraintTop_toBottomOf="@id/iv_poster" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_bottom"
@@ -80,8 +79,7 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tv_title,iv_category"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="715dp" />
+        android:layout_marginTop="8dp"/>
 
     <TextView
         android:id="@+id/tv_description"
@@ -90,10 +88,10 @@
         android:layout_marginTop="8dp"
         android:tint="@color/color_gray"
         android:textSize="14sp"
-        tools:text="Не контент, а дополнительное описание для основного заголовка."
+        android:text="Не контент, а дополнительное описание для основного заголовка."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_category" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier_bottom" />
 
     <ImageView
         android:id="@+id/iv_likes"
@@ -117,7 +115,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_comments"
         app:layout_constraintStart_toEndOf="@+id/iv_likes"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
-        tools:text="5" />
+        android:text="5" />
 
     <ImageView
         android:id="@+id/iv_comments"
@@ -142,7 +140,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_read_duration"
         app:layout_constraintStart_toEndOf="@+id/iv_comments"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
-        tools:text="30" />
+        android:text="30" />
 
     <TextView
         android:id="@+id/tv_read_duration"
@@ -156,7 +154,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_bookmark"
         app:layout_constraintStart_toEndOf="@+id/tv_comments_count"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
-        tools:text="3 min read" />
+        android:text="3 min read" />
 
     <ImageView
         android:id="@+id/iv_bookmark"

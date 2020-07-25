@@ -14,23 +14,32 @@ import androidx.annotation.IntRange
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
 
-class HeaderSpan constructor(
-        @IntRange(from = 1, to = 6) private val level: Int,
-        @ColorInt private val textColor: Int,
-        @ColorInt private val dividerColor: Int,
-        @Px private val marginTop: Float,
-        @Px private val marginBottom: Float
-) : MetricAffectingSpan(), LineHeightSpan, LeadingMarginSpan {
 
-    private val linePadding = 0.4f
+class HeaderSpan constructor(
+    @IntRange(from = 1, to = 6)
+    private val level: Int,
+    @ColorInt
+    private val textColor: Int,
+    @ColorInt
+    private val dividerColor: Int,
+    @Px
+    private val marginTop: Float,
+    @Px
+    private val marginBottom: Float
+) :
+    MetricAffectingSpan(), LineHeightSpan, LeadingMarginSpan {
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val linePadding = 0.4f
     private var originAscent = 0
-    private val sizes = mapOf(
-            1 to 2f,
-            2 to 1.5f,
-            3 to 1.25f,
-            4 to 1f,
-            5 to 0.875f,
-            6 to 0.85f
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val sizes = mapOf(
+        1 to 2f,
+        2 to 1.5f,
+        3 to 1.25f,
+        4 to 1f,
+        5 to 0.875f,
+        6 to 0.85f
     )
 
     var topExtraPadding = 0
@@ -39,12 +48,12 @@ class HeaderSpan constructor(
     lateinit var lastLineBounds: kotlin.ranges.IntRange
 
     override fun chooseHeight(
-            text: CharSequence?,
-            start: Int,
-            end: Int,
-            spanstartv: Int,
-            lineHeight: Int,
-            fm: Paint.FontMetricsInt?
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        spanstartv: Int,
+        lineHeight: Int,
+        fm: Paint.FontMetricsInt?
     ) {
 
         fm ?: return
@@ -92,9 +101,9 @@ class HeaderSpan constructor(
     }
 
     override fun drawLeadingMargin(
-            canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
-            lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
-            lineEnd: Int, isFirstLine: Boolean, layout: Layout?
+        canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
+        lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
+        lineEnd: Int, isFirstLine: Boolean, layout: Layout?
     ) {
         //for 1 or 2 level and last line
         if ((level == 1 || level == 2) && (text as Spanned).getSpanEnd(this) == lineEnd) {
@@ -103,14 +112,16 @@ class HeaderSpan constructor(
                 val lineOffset = lineBaseline + lh * linePadding
 
                 canvas.drawLine(
-                        0f,
-                        lineOffset,
-                        canvas.width.toFloat(),
-                        lineOffset,
-                        paint
+                    0f,
+                    lineOffset,
+                    canvas.width.toFloat(),
+                    lineOffset,
+                    paint
                 )
             }
         }
+
+//        canvas.drawFontLines(lineTop, lineBottom, lineBaseline, paint)
     }
 
     override fun getLeadingMargin(first: Boolean): Int {
@@ -131,6 +142,19 @@ class HeaderSpan constructor(
         color = oldColor
         style = oldStyle
         strokeWidth = oldWidth
+    }
+
+    private fun Canvas.drawFontLines(
+        top: Int,
+        bottom: Int,
+        lineBaseline: Int,
+        paint: Paint
+    ) {
+        drawLine(0f, top + 0f, width + 0f, top + 0f, Paint().apply { color = Color.BLUE })
+        drawLine(0f, bottom + 0f, width + 0f, bottom + 0f, Paint().apply { color = Color.GREEN })
+        drawLine(0f,lineBaseline + 0f,width + 0f,lineBaseline + 0f,Paint().apply { color = Color.RED })
+//        drawLine(0f,paint.ascent() + lineBaseline,width + 0f,paint.ascent() + lineBaseline,Paint().apply { color = Color.BLACK })
+//        drawLine(0f,paint.descent() + lineBaseline,width + 0f,paint.descent() + lineBaseline,Paint().apply { color = Color.MAGENTA })
     }
 
 }

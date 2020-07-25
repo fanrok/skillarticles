@@ -8,27 +8,30 @@ import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.NavigationCommand
 
 class RootViewModel(handle: SavedStateHandle) : BaseViewModel<RootState>(handle, RootState()) {
-    private val repository = RootRepository
+    private val repository: RootRepository = RootRepository
     private val privateRoutes = listOf(R.id.nav_profile)
 
     init {
-        subscribeOnDataSource(repository.isAuth()) { isAuth, currentState ->
-            currentState.copy(isAuth = isAuth)
+        subscribeOnDataSource(repository.isAuth()) { isAuth, state ->
+            state.copy(isAuth = isAuth)
         }
     }
 
-    override fun navigate(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.To -> {
-                if (privateRoutes.contains(navigationCommand.destination) && !currentState.isAuth) {
-                    super.navigate(NavigationCommand.StartLogin(navigationCommand.destination))
-                } else {
-                    super.navigate(navigationCommand)
+    override fun navigate(command: NavigationCommand) {
+        when(command){
+            is NavigationCommand.To ->{
+                if(privateRoutes.contains(command.destination) && !currentState.isAuth){
+                    //set requested destination as arg
+                    super.navigate(NavigationCommand.StartLogin(command.destination))
+                }else{
+                    super.navigate(command)
                 }
             }
-            else -> super.navigate(navigationCommand)
+            else -> super.navigate(command)
         }
     }
 }
 
-data class RootState(val isAuth: Boolean = false) : IViewModelState
+data class RootState(
+    val isAuth: Boolean = false
+) : IViewModelState

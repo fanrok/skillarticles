@@ -6,12 +6,16 @@ import android.text.Layout
 import android.text.style.LeadingMarginSpan
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
+import ru.skillbranch.skillarticles.extensions.getLineBottomWithoutPadding
 
-// https://prnt.sc/rbd2bf
+
 class UnorderedListSpan(
-        @Px private val gapWidth: Float,
-        @Px private val bulletRadius: Float,
-        @ColorInt private val bulletColor: Int
+    @Px
+    private val gapWidth: Float,
+    @Px
+    private val bulletRadius: Float,
+    @ColorInt
+    private val bulletColor: Int
 ) : LeadingMarginSpan {
 
     override fun getLeadingMargin(first: Boolean): Int {
@@ -19,17 +23,19 @@ class UnorderedListSpan(
     }
 
     override fun drawLeadingMargin(
-            canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
-            lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
-            lineEnd: Int, isFirstLine: Boolean, layout: Layout?
+        canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
+        lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
+        lineEnd: Int, isFirstLine: Boolean, layout: Layout
     ) {
-        if(isFirstLine) {
-            paint.withCustomColor {
+        //only for fist line draw bullet
+        if (isFirstLine) {
+            paint.withCustomColor{
                 canvas.drawCircle(
-                        gapWidth + currentMarginLocation + bulletRadius,
-                        (lineTop + lineBottom)/2f,
-                        bulletRadius,
-                        paint)
+                    gapWidth + currentMarginLocation + bulletRadius,
+                    (lineTop + layout.getLineBottomWithoutPadding(layout.getLineForOffset(lineStart))) / 2f,
+                    bulletRadius,
+                    paint
+                )
             }
         }
     }

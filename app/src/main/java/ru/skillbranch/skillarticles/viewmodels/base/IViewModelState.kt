@@ -4,17 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 
 interface IViewModelState {
     /**
-     * override if need save state in bundle
+     * override this if need save state in bundle
      */
-    fun save(outState: SavedStateHandle) {
-        // default implementation
+    fun save(outState: SavedStateHandle){
+        //default empty implementation
     }
 
     /**
-     * override if need restore state from bundle
+     * override this if need restore state from bundle
      */
-    fun restore(savedState: SavedStateHandle) : IViewModelState {
-        // default implementation
+    fun restore(savedState: SavedStateHandle) : IViewModelState{
+        //default empty implementation
         return this
     }
 }
