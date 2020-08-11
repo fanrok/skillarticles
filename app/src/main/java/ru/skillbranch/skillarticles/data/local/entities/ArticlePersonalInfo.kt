@@ -10,10 +10,13 @@ data class ArticlePersonalInfo(
     @PrimaryKey
     @ColumnInfo(name = "article_id")
     val articleId: String,
+
     @ColumnInfo(name = "is_like")
     val isLike: Boolean = false,
+
     @ColumnInfo(name = "is_bookmark")
     val isBookmark: Boolean = false,
+
     @ColumnInfo(name = "updated_at")
     val updatedAt: Date = Date()
 )

@@ -5,7 +5,7 @@ import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
 import java.util.*
 
-class DateConverter{
+class DateConverter {
     @TypeConverter
     fun timestampToDate(timestamp: Long): Date = Date(timestamp)
 
@@ -13,7 +13,14 @@ class DateConverter{
     fun dateToTimestamp(date: Date): Long = date.time
 }
 
-class MarkdownConverter{
+class MarkdownConverter {
     @TypeConverter
-    fun toMarkdown(content: String?):List<MarkdownElement>? = content?.let{MarkdownParser.parse(it)}
+    fun toMarkdown(content: String?): List<MarkdownElement>? {
+        return content?.let { MarkdownParser.parse(it) }
+    }
+}
+
+class ListConverter {
+    @TypeConverter
+    fun toList(str: String?): List<String> = str?.split(",") ?: emptyList()
 }

@@ -7,6 +7,6 @@ import ru.skillbranch.skillarticles.data.local.entities.ArticleContent
 
 @Dao
 interface ArticleContentsDao {
-    @Insert( onConflict = OnConflictStrategy.REPLACE)
-    fun insert(obj:ArticleContent):Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(obj: ArticleContent): Long
 }
