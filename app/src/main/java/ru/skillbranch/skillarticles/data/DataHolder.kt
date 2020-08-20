@@ -39,7 +39,8 @@ object NetworkDataHolder {
         val mutableList =
                 commentsData[articleId] ?: error("Comments for article id : $articleId not found")
         val index =
-                if (answerToSlug == null) 0 else mutableList.indexOfFirst { it.slug == answerToSlug }.inc()
+                if (answerToSlug == null) 0 else mutableList.indexOfFirst { it.slug == answerToSlug }
+                        .inc()
         val mess = mutableList.getOrNull(index.dec())
         val id = "${mutableList.size}"
         mutableList.add(
@@ -77,3 +78,8 @@ object NetworkDataHolder {
         return list
     }
 }
+
+
+
+
+

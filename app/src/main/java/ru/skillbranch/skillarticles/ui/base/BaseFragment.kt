@@ -21,40 +21,41 @@ abstract class BaseFragment<T : BaseViewModel<out IViewModelState>> : Fragment()
     val toolbar
         get() = root.toolbar
 
-    //set listeners, tuning views
     abstract fun setupViews()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? = inflater.inflate(layout, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //prepare toolbar
+        //prepare toolbar and bottombar
         root.toolbarBuilder
-            .invalidate()
-            .prepare(prepareToolbar)
-            .build(root)
+                .invalidate()
+                .prepare(prepareToolbar)
+                .build(root)
 
         root.bottombarBuilder
-            .invalidate()
-            .prepare(prepareBottombar)
-            .build(root)
+                .invalidate()
+                .prepare(prepareBottombar)
+                .build(root)
 
         //restore state
         viewModel.restoreState()
         binding?.restoreUi(savedInstanceState)
 
         //owner it is view
-        viewModel.observeState(viewLifecycleOwner) { binding?.bind(it) }
+        viewModel.observeState(viewLifecycleOwner) {
+            binding?.bind(it)
+        }
         //bind default values if viewmodel not loaded data
         if (binding?.isInflated == false) binding?.onFinishInflate()
 
-        viewModel.observeNotifications(viewLifecycleOwner) { root.renderNotification(it) }
+        viewModel.observeNotification(viewLifecycleOwner) { root.renderNotification(it) }
         viewModel.observeNavigation(viewLifecycleOwner) { root.viewModel.navigate(it) }
 
         setupViews()
@@ -62,6 +63,8 @@ abstract class BaseFragment<T : BaseViewModel<out IViewModelState>> : Fragment()
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
+//        viewModel.restoreState()
+//        binding?.restoreUi(savedInstanceState)
         binding?.rebind()
     }
 
@@ -76,12 +79,13 @@ abstract class BaseFragment<T : BaseViewModel<out IViewModelState>> : Fragment()
             for ((index, menuHolder) in root.toolbarBuilder.items.withIndex()) {
                 val item = menu.add(0, menuHolder.menuId, index, menuHolder.title)
                 item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS or MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW)
-                    .setIcon(menuHolder.icon)
-                    .setOnMenuItemClickListener {
-                        menuHolder.clickListener?.invoke(it)?.let { true } ?: false
-                    }
+                        .setIcon(menuHolder.icon)
+                        .setOnMenuItemClickListener {
+                            menuHolder.clickListener?.invoke(it)?.let { true } ?: false
+                        }
 
-                if (menuHolder.actionViewLayout != null) item.setActionView(menuHolder.actionViewLayout)
+                if (menuHolder.actionViewLayout != null)
+                    item.setActionView(menuHolder.actionViewLayout)
             }
         } else menu.clear()
         super.onPrepareOptionsMenu(menu)

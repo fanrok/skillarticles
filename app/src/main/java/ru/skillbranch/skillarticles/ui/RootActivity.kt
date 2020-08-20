@@ -65,7 +65,7 @@ class RootActivity : BaseActivity<RootViewModel>(){
 
                 with(snackbar) {
                     setActionTextColor(getColor(R.color.color_accent_dark))
-                    setAction(label) { handler.invoke() }
+                    setAction(label) { handler?.invoke() }
                 }
             }
 

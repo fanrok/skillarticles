@@ -16,38 +16,21 @@ import ru.skillbranch.skillarticles.ui.custom.behaviors.BottombarBehavior
 import kotlin.math.hypot
 
 class Bottombar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), CoordinatorLayout.AttachedBehavior {
+
     var isSearchMode = false
 
-    override fun getBehavior(): CoordinatorLayout.Behavior<Bottombar> {
-        return BottombarBehavior()
-    }
-
     init {
+//        View.inflate(context, R.layout.layout_bottombar, this)
         val materialBg = MaterialShapeDrawable.createWithElevationOverlay(context)
         materialBg.elevation = elevation
         background = materialBg
     }
 
-    //save state
-    override fun onSaveInstanceState(): Parcelable? {
-        val savedState = SavedState(super.onSaveInstanceState())
-        savedState.ssIsSearchMode = isSearchMode
-        return savedState
-    }
-
-    //restore state
-    override fun onRestoreInstanceState(state: Parcelable) {
-        super.onRestoreInstanceState(state)
-        if (state is SavedState) {
-            isSearchMode = state.ssIsSearchMode
-            reveal.isVisible = isSearchMode
-            group_bottom.isVisible = !isSearchMode
-        }
-    }
+    override fun getBehavior(): CoordinatorLayout.Behavior<*> = BottombarBehavior()
 
     fun setSearchState(search: Boolean) {
         if (isSearchMode == search || !isAttachedToWindow) return
@@ -56,31 +39,31 @@ class Bottombar @JvmOverloads constructor(
         else animateHideSearchPanel()
     }
 
-    private fun animateHideSearchPanel() {
-        group_bottom.isVisible = true
-        val endRadius = hypot(width.toFloat(), height / 2f)
-        val va = ViewAnimationUtils.createCircularReveal(
-            reveal,
-            width,
-            height / 2,
-            endRadius,
-            0f
-        )
-        va.doOnEnd { reveal.isVisible = false }
-        va.start()
-    }
-
     private fun animateShowSearchPanel() {
         reveal.isVisible = true
         val endRadius = hypot(width.toFloat(), height / 2f)
         val va = ViewAnimationUtils.createCircularReveal(
-            reveal,
-            width,
-            height / 2,
-            0f,
-            endRadius
+                reveal,
+                width,
+                height / 2,
+                0f,
+                endRadius
         )
         va.doOnEnd { group_bottom.isVisible = false }
+        va.start()
+    }
+
+    private fun animateHideSearchPanel() {
+        group_bottom.isVisible = true
+        val startRadius = hypot(width.toFloat(), height / 2f)
+        val va = ViewAnimationUtils.createCircularReveal(
+                reveal,
+                width,
+                height / 2,
+                startRadius,
+                0f
+        )
+        va.doOnEnd { reveal.isVisible = false }
         va.start()
     }
 
@@ -89,26 +72,51 @@ class Bottombar @JvmOverloads constructor(
             tv_search_result.text = "Not found"
             btn_result_up.isEnabled = false
             btn_result_down.isEnabled = false
-        }else{
-            tv_search_result.text = "${position.inc()} of $searchCount"
+        } else {
+            val info = "${position.inc()} of $searchCount"
+            tv_search_result.text = info
             btn_result_up.isEnabled = true
             btn_result_down.isEnabled = true
         }
-
-        //lock button presses in min/max positions
-        when(position){
+        // lock btn in min/max positions
+        when (position) {
             0 -> btn_result_up.isEnabled = false
-            searchCount -1 -> btn_result_down.isEnabled = false
+            searchCount - 1 -> btn_result_down.isEnabled = false
         }
     }
 
-    fun show(){
-        ObjectAnimator.ofFloat(this, "translationY", 0f).start()
+    // save bottom state
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState = SavedState(super.onSaveInstanceState())
+        savedState.ssIsSearchMode = isSearchMode
+        return savedState
     }
 
-    fun hide(){
-        ObjectAnimator.ofFloat(this, "translationY", height.toFloat()).start()
+    // restore bottom state
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedState) {
+            isSearchMode = state.ssIsSearchMode
+            reveal.isVisible = isSearchMode
+            group_bottom.isVisible = !isSearchMode
+        }
     }
+
+    fun show() {
+        ObjectAnimator.ofFloat(
+                this, "translationY",
+                0f
+        ).start()
+    }
+
+    fun hide() {
+        ObjectAnimator.ofFloat(
+                this, "translationY",
+                height.toFloat()
+        ).start()
+    }
+
+    //============================================================================
 
     private class SavedState : BaseSavedState, Parcelable {
         var ssIsSearchMode: Boolean = false
@@ -119,15 +127,15 @@ class Bottombar @JvmOverloads constructor(
             ssIsSearchMode = src.readInt() == 1
         }
 
-        override fun writeToParcel(dst: Parcel, flags: Int) {
-            super.writeToParcel(dst, flags)
-            dst.writeInt(if (ssIsSearchMode) 1 else 0)
+        override fun writeToParcel(out: Parcel, flags: Int) {
+            super.writeToParcel(out, flags)
+            out.writeInt(if (ssIsSearchMode) 1 else 0)
         }
 
         override fun describeContents() = 0
 
         companion object CREATOR : Parcelable.Creator<SavedState> {
-            override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
+            override fun createFromParcel(source: Parcel) = SavedState(source)
             override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
         }
     }

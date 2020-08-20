@@ -2,7 +2,7 @@ package ru.skillbranch.skillarticles.extensions
 
 fun List<Pair<Int, Int>>.groupByBounds(bounds: List<Pair<Int, Int>>): List<List<Pair<Int, Int>>> {
 
-    val results= List<MutableList<Pair<Int, Int>>>(bounds.size){mutableListOf()}
+    val out= List<MutableList<Pair<Int, Int>>>(bounds.size){mutableListOf()}
 
     var lastResult = 0
 
@@ -13,21 +13,21 @@ fun List<Pair<Int, Int>>.groupByBounds(bounds: List<Pair<Int, Int>>): List<List<
 
             when {
                 result.first in boundRange && result.second in boundRange -> {
-                        results[index].add(result.first to result.second)
+                        out[index].add(result.first to result.second)
                         lastResult++
                         lastIndex = result.second
                 }
 
                 result.first in boundRange && result.second !in boundRange -> {
                     if(result.first != bound.second){
-                        results[index].add(result.first to bound.second)
+                        out[index].add(result.first to bound.second)
                     }
                     continue@bounds
                 }
 
                 result.first !in boundRange && result.second in boundRange -> {
                     if(bound.first != result.second){
-                        results[index].add(bound.first to result.second)
+                        out[index].add(bound.first to result.second)
                     }
                     lastResult++
                     continue@results
@@ -36,5 +36,5 @@ fun List<Pair<Int, Int>>.groupByBounds(bounds: List<Pair<Int, Int>>): List<List<
         }
     }
 
-    return results
+    return out
 }

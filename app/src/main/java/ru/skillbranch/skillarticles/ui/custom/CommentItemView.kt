@@ -34,20 +34,11 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
     private val grayColor = context.getColor(R.color.color_gray)
     private val primaryColor = context.attrValue(R.attr.colorPrimary)
     private val dividerColor = context.getColor(R.color.color_divider)
-    private val baseColor = context.getColor(R.color.color_gray_light)
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = dividerColor
         strokeWidth = lineSize
         style = Paint.Style.STROKE
     }
-
-    private val shimmerDrawable by lazy(LazyThreadSafetyMode.NONE) {
-        ShimmerDrawable.fromView(this).apply {
-            setBaseColor(baseColor)
-            setHighlightColor(dividerColor)
-        }
-    }
-
 
     init {
         setPadding(defaultHSpace, defaultVSpace, defaultHSpace, defaultVSpace)
@@ -97,12 +88,22 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         if (tv_answer_to.isVisible) usedHeight += tv_answer_to.measuredHeight
 
         tv_date.minWidth = avatarSize
-        measureChild(tv_date, widthMeasureSpec, heightMeasureSpec)
 
+        //============== ВАРИАНТ 1 ===================
+        // Дата в полную ширину, имя автора, если не вмещается, переносится
+        // на вторую строку
+        measureChild(tv_date, widthMeasureSpec, heightMeasureSpec)
         tv_author.width =
-            width - paddingLeft - paddingRight - avatarSize - defaultHSpace - tv_date.measuredWidth
+                width - paddingLeft - paddingRight - avatarSize - defaultHSpace - tv_date.measuredWidth
         measureChild(tv_author, widthMeasureSpec, heightMeasureSpec)
 
+        //============== ВАРИАНТ 2 ===================
+//        // Имя автора в полную ширину, дата, если не вмещается, обрезана
+//        measureChild(tv_author, widthMeasureSpec, heightMeasureSpec)
+//        tv_date.width = width - paddingLeft - paddingRight - avatarSize - defaultHSpace - tv_author.measuredWidth
+//        measureChild(tv_date, widthMeasureSpec, heightMeasureSpec)
+
+        //============================================
         usedHeight += avatarSize + defaultVSpace
         tv_body.width = width - paddingLeft - paddingRight
         measureChild(tv_body, widthMeasureSpec, heightMeasureSpec)
@@ -118,18 +119,18 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         if (tv_answer_to.isVisible) {
             val lb = left + avatarSize + defaultHSpace / 2
             tv_answer_to.layout(
-                lb,
-                usedHeight,
-                lb + tv_answer_to.measuredWidth,
-                usedHeight + tv_answer_to.measuredHeight
+                    lb,
+                    usedHeight,
+                    lb + tv_answer_to.measuredWidth,
+                    usedHeight + tv_answer_to.measuredHeight
             )
 
             val diff = (tv_answer_to.measuredHeight - iconSize) / 2
             iv_answer_icon.layout(
-                tv_answer_to.right + defaultHSpace / 2,
-                usedHeight + diff,
-                tv_answer_to.right + defaultHSpace / 2 + iconSize,
-                usedHeight + iconSize + diff
+                    tv_answer_to.right + defaultHSpace / 2,
+                    usedHeight + diff,
+                    tv_answer_to.right + defaultHSpace / 2 + iconSize,
+                    usedHeight + iconSize + diff
             )
 
             usedHeight += tv_answer_to.measuredHeight
@@ -139,33 +140,33 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         val diffD = (avatarSize - tv_date.measuredHeight) / 2
 
         iv_avatar.layout(
-            left,
-            usedHeight,
-            left + avatarSize,
-            usedHeight + avatarSize
+                left,
+                usedHeight,
+                left + avatarSize,
+                usedHeight + avatarSize
         )
 
         tv_author.layout(
-            iv_avatar.right + defaultHSpace / 2,
-            usedHeight + diffH,
-            iv_avatar.right + defaultHSpace / 2 + tv_author.measuredWidth,
-            usedHeight + tv_author.measuredHeight + diffH
+                iv_avatar.right + defaultHSpace / 2,
+                usedHeight + diffH,
+                iv_avatar.right + defaultHSpace / 2 + tv_author.measuredWidth,
+                usedHeight + tv_author.measuredHeight + diffH
         )
 
         tv_date.layout(
-            tv_author.right + defaultHSpace / 2,
-            usedHeight + diffD,
-            tv_author.right + defaultHSpace / 2 + tv_date.measuredWidth,
-            usedHeight + tv_date.measuredHeight + diffD
+                tv_author.right + defaultHSpace / 2,
+                usedHeight + diffD,
+                tv_author.right + defaultHSpace / 2 + tv_date.measuredWidth,
+                usedHeight + tv_date.measuredHeight + diffD
         )
 
         usedHeight += avatarSize + defaultVSpace
 
         tv_body.layout(
-            left,
-            usedHeight,
-            left + tv_body.measuredWidth,
-            usedHeight + tv_body.measuredHeight
+                left,
+                usedHeight,
+                left + tv_body.measuredWidth,
+                usedHeight + tv_body.measuredHeight
         )
     }
 
@@ -175,34 +176,35 @@ class CommentItemView(context: Context) : ViewGroup(context, null, 0) {
         if (level == 1) return
         for (i in 1 until level) {
             canvas.drawLine(
-                i.toFloat() * defaultHSpace,
-                0f,
-                i.toFloat() * defaultHSpace,
-                canvas.height.toFloat(),
-                linePaint
+                    i.toFloat() * defaultHSpace,
+                    0f,
+                    i.toFloat() * defaultHSpace,
+                    canvas.height.toFloat(),
+                    linePaint
             )
         }
     }
 
     fun bind(item: CommentItemData?) {
         if (item == null) {
-            foreground = shimmerDrawable
-            shimmerDrawable.start()
+            //TODO show shimmer
+            iv_avatar.setImageDrawable(
+                    resources.getDrawable(
+                            R.drawable.ic_account_circle_black_24dp
+                    )
+            )
+            tv_author.text = "Name loading..."
+            tv_date.text = "time loading..."
+            tv_body.text = "Comment loading..."
         } else {
             val level = min(item.slug.split("/").size.dec(), 5)
             setPaddingOptionally(left = level * defaultHSpace)
 
-            if (foreground != null) {
-                shimmerDrawable.stop()
-                foreground = null
-            }
-
-
             Glide.with(context)
-                .load(item.user.avatar)
-                .apply(RequestOptions.circleCropTransform())
-                .override(avatarSize)
-                .into(iv_avatar)
+                    .load(item.user.avatar)
+                    .apply(RequestOptions.circleCropTransform())
+                    .override(avatarSize)
+                    .into(iv_avatar)
 
             tv_author.text = item.user.name
             tv_date.text = item.date.humanizeDiff()
